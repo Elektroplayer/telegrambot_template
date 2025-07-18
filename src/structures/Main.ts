@@ -2,7 +2,6 @@ import { readdirSync } from "fs";
 import Event from "./Event.js";
 import Scene from "./Scene.js";
 import Cache from "../lib/Cache.js";
-import Timer from "./Timer.js";
 import Query from "./Query.js";
 
 export default class Main {
@@ -10,7 +9,6 @@ export default class Main {
 
     run() {
         this.initEvents();
-        this.initTimers();
         this.initQueries();
         this.initScenes();
     }
@@ -45,19 +43,5 @@ export default class Main {
 
             Cache.scenes.push(new Scene(sceneName));
         });
-    }
-
-    async initTimers() {
-        for (let dirent of readdirSync("./dist/timers", {withFileTypes: true})) {
-            if (!dirent.name.endsWith("")) continue;
-
-            console.log(`[loader] [+] Таймер ${dirent.name}`);
-        
-            let timerClass = (await import("../timers/" + dirent.name)).default;
-            let timer:Timer = new timerClass();
-
-            timer.init();
-            // setInterval(timer.exec, timer.time);
-        }
     }
 }
